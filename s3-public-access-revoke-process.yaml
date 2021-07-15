@@ -76,7 +76,7 @@ Resources:
                 ProjectName: !Ref CodeBuildProjectName
               OutputArtifacts: 
                 - 
-                  Name: template
+                  Name: BuildArtifact
               RunOrder: 1
         - 
           Name: Deploy
@@ -84,7 +84,7 @@ Resources:
             - 
               Name: deploy
               InputArtifacts:
-                - Name: template
+                - Name: BuildArtifact
                 - Name: SourceArtifact
               ActionTypeId: 
                 Category: Deploy 
