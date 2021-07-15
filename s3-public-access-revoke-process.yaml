@@ -1,0 +1,102 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: pipeline template
+
+Parameters:
+  CodepipelineRoleArn:
+    Type: String
+    Default: arn:aws:iam::851277529607:role/service-role/AWSCodePipelineServiceRole-us-east-1-account-validation-process
+  GithubConnectioArn:
+    Type: String
+    Default: arn:aws:codestar-connections:us-east-1:851277529607:connection/69ad7716-ee5b-4435-9eed-0f6aefef9636
+  RepositoryName:
+    Type: String
+    Default: Taura-Security/s3-public-access-revoke-process
+  CodeBuildProjectName:
+    Type: String
+    Default: s3-public-access-revoke-process
+  StackName:
+    Type: String
+    Default: s3-public-access-revoke-process-pipeline
+  RoleDeployArn:
+    Type: String
+    Default: arn:aws:iam::851277529607:role/cf-codebuild-CustomRole
+  S3ArtifactStore:
+    Type: String
+    Default: codepipeline-us-east-1-114288213882
+  BranchName:
+    Type: String
+    Default: master
+
+Resources: 
+  codePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Ref StackName
+      RoleArn: !Ref CodepipelineRoleArn
+      ArtifactStore: 
+        Location: !Ref S3ArtifactStore
+        Type: S3
+
+      Stages: 
+        - 
+          Name: Source 
+          Actions: 
+            - 
+              Name: Source
+              ActionTypeId: 
+                Category: Source 
+                Owner: AWS 
+                Version: '1'
+                Provider: CodeStarSourceConnection 
+              Configuration: 
+                BranchName: !Ref BranchName
+                ConnectionArn: !Ref GithubConnectioArn
+                FullRepositoryId: !Ref RepositoryName
+                OutputArtifactFormat: CODE_ZIP
+              OutputArtifacts: 
+                - 
+                  Name: SourceArtifact 
+              RunOrder: 1
+              Region: us-east-1
+              Namespace: SourceVariables
+        - 
+          Name: Build 
+          Actions: 
+            - 
+              Name: build
+              InputArtifacts:
+                -
+                  Name: SourceArtifact
+              ActionTypeId: 
+                Category: Build 
+                Owner: AWS 
+                Version: '1'
+                Provider: CodeBuild 
+              Configuration: 
+                ProjectName: !Ref CodeBuildProjectName
+              OutputArtifacts: 
+                - 
+                  Name: template
+              RunOrder: 1
+        - 
+          Name: Deploy
+          Actions: 
+            - 
+              Name: deploy
+              InputArtifacts:
+                - Name: template
+                - Name: SourceArtifact
+              ActionTypeId: 
+                Category: Deploy 
+                Owner: AWS 
+                Version: '1'
+                Provider: CloudFormation 
+              Configuration: 
+                ActionMode: CREATE_UPDATE
+                Capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                RoleArn: !Ref RoleDeployArn
+                StackName: !Ref StackName
+                TemplatePath: template::cloudformation.yaml
+                TemplateConfiguration: SourceArtifact::template/parameters.json
+              RunOrder: 1
+              Region: us-east-1
