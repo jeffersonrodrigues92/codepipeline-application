@@ -96,7 +96,7 @@ Resources:
                 Capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 RoleArn: !Ref RoleDeployArn
                 StackName: !Ref StackName
-                TemplatePath: template::cloudformation.yaml
-                TemplateConfiguration: SourceArtifact::template/parameters.json
+                TemplatePath: BuildArtifact::cloudformation.yaml
+                TemplateConfiguration: SourceArtifact::parameters.json
               RunOrder: 1
               Region: us-east-1
