@@ -97,6 +97,6 @@ Resources:
                 RoleArn: !Ref RoleDeployArn
                 StackName: !Ref StackName
                 TemplatePath: BuildArtifact::cloudformation.yaml
-                TemplateConfiguration: SourceArtifact::parameter.json
+                TemplateConfiguration: SourceArtifact::cloudformation/parameter.json
               RunOrder: 1
               Region: us-east-1
