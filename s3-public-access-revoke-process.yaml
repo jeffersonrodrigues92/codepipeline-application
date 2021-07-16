@@ -28,6 +28,7 @@ Parameters:
     Default: master
 
 Resources: 
+
   codePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
