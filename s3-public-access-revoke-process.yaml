@@ -13,10 +13,10 @@ Parameters:
     Default: Taura-Security/s3-public-access-revoke-process
   CodeBuildProjectName:
     Type: String
-    Default: s3-public-access-revoke-process
+    Default: account-validation-process
   StackName:
     Type: String
-    Default: s3-public-access-revoke-process-pipeline
+    Default: s3-public-access-revoke-process
   RoleDeployArn:
     Type: String
     Default: arn:aws:iam::851277529607:role/cf-codebuild-CustomRole
@@ -36,7 +36,6 @@ Resources:
       ArtifactStore: 
         Location: !Ref S3ArtifactStore
         Type: S3
-
       Stages: 
         - 
           Name: Source 
