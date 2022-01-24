@@ -13,7 +13,7 @@ Parameters:
     Default: 
   CodeBuildProjectName:
     Type: String
-    Default: account-validation-process
+    Default: build
   StackName:
     Type: String
     Default: 
@@ -101,3 +101,4 @@ Resources:
                 TemplateConfiguration: SourceArtifact::template/parameters.json
               RunOrder: 1
               Region: us-east-1
+              
